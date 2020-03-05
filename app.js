@@ -9,6 +9,9 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 var employeeArray = [];
 
+const util = require("util");
+const writeFileAsync = util.promisify(fs.writeFile);
+
 const Employee = require("./lib/Employee");
 
 function askRole() {
@@ -102,7 +105,7 @@ function askRest(answerRole, answerVar) {
 function createEmployee(answerRole, answerVar, answerName, answerID, answerEmail) {
 
   if (answerRole === "Manager") {
-     answerName = new Manger(answerName, answerID, answerEmail, answerVar)  
+     answerName = new Manager(answerName, answerID, answerEmail, answerVar)  
   } else if (answerRole === "Intern") {
      answerName = new Intern(answerName, answerID, answerEmail, answerVar) 
   } else {
@@ -120,9 +123,9 @@ function askAnyMore() {
       {
        type: 'checkbox',
        name: 'anyMore',
-       message: 'Whan to enter anymore employees?',
+       message: 'Want to enter anymore employees? Just hit ENTER for no',
        choices: [
-         'Yes', 'No',
+         'Yes',
        ],
        },
     ])
@@ -132,9 +135,24 @@ function askAnyMore() {
        if (answers.anyMore[0] === "Yes") {
            askRole()
        } else {
-           console.log(bob = render(employeeArray))
+            printHTML()
+           //console.log(const bob = render(employeeArray))
+           //fs.writeFile("orgChart.html", bob)
+
+           //const md = generateMd(answers);
+           //const bob = render(employeeArray);
+           //await writeFileAsync("orgChart.html", bob);
        }      
     });
+  }
+  
+  async function printHTML() {
+    
+    //console.log(const bob = render(employeeArray))
+    //fs.writeFile("orgChart.html", bob)
+  
+    const bob = render(employeeArray);
+    await writeFileAsync("orgChart.html", bob);
   }
 
   askRole();
